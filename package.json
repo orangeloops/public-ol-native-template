@@ -72,7 +72,7 @@
     "jest": "24.8.0",
     "jsdom": "15.1.1",
     "lint-staged": "9.2.0",
-    "metro-react-native-babel-preset": "0.54.1",
+    "metro-react-native-babel-preset": "0.55.0",
     "prettier": "1.18.2",
     "react-native-storybook-loader": "1.8.0",
     "react-native-svg-transformer": "0.13.0",
