@@ -41,7 +41,7 @@
     "@types/react-navigation": "3.0.7",
     "@types/react-test-renderer": "16.8.2",
     "@types/uuid": "3.4.5",
-    "@typescript-eslint/eslint-plugin": "1.11.0",
+    "@typescript-eslint/eslint-plugin": "1.12.0",
     "@typescript-eslint/parser": "1.11.0",
     "axios-mock-adapter": "1.17.0",
     "babel-jest": "24.8.0",
