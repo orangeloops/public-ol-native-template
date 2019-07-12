@@ -3,13 +3,12 @@ import {loadStories} from "./storyLoader";
 import {withKnobs} from "@storybook/addon-knobs";
 import "./rn-addons";
 import * as React from "react";
-import {useEffect, useState} from "react";
 import {DataStore} from "../src/core/stores/DataStore";
 
 const CommonStoryDecorator = ({story}) => {
-  const [shouldRender, setShouldRender] = useState(false);
+  const [shouldRender, setShouldRender] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setTimeout(() => setShouldRender(true));
 
     return () => {
@@ -17,7 +16,7 @@ const CommonStoryDecorator = ({story}) => {
     };
   }, []);
 
-  return shouldRender ? <>{story()}</> : null;
+  return shouldRender ? story() : null;
 };
 
 configure(() => {
