@@ -81,7 +81,7 @@
     "typescript": "3.5.3"
   },
   "dependencies": {
-    "@react-native-community/async-storage": "1.4.2",
+    "@react-native-community/async-storage": "1.5.1",
     "apollo-cache-inmemory": "1.6.2",
     "apollo-client": "2.6.3",
     "apollo-link": "1.2.12",
