@@ -22,7 +22,7 @@
     "@babel/runtime": "7.5.4",
     "@storybook/addon-actions": "5.2.0-alpha.40",
     "@storybook/addon-knobs": "5.2.0-alpha.40",
-    "@storybook/addon-ondevice-knobs": "5.2.0-alpha.40",
+    "@storybook/addon-ondevice-knobs": "5.2.1",
     "@storybook/addon-ondevice-notes": "5.2.0-alpha.40",
     "@storybook/addons": "5.2.0-alpha.40",
     "@storybook/react-native": "5.2.0-alpha.40",
