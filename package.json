@@ -118,7 +118,7 @@
     "react-native-reanimated": "1.1.0",
     "react-native-splash-screen": "3.2.0",
     "react-native-svg": "9.5.1",
-    "react-navigation": "3.11.0",
+    "react-navigation": "4.0.10",
     "reflect-metadata": "0.1.13",
     "regenerator-runtime": "0.13.2",
     "rn-viewpager": "1.2.9",
