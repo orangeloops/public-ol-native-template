@@ -4,30 +4,30 @@ import {observer} from "mobx-react";
 import * as React from "react";
 import {StatusBar, View} from "react-native";
 import SplashScreen from "react-native-splash-screen";
+
 import {styles} from "./App.styles";
-import {BaseComponent} from "./components/BaseComponent";
 import {Loading} from "./components/loading/Loading";
 import {Root} from "./navigators";
+import {AppStore} from "./stores/AppStore";
 
-@observer
-export class App extends BaseComponent {
-  componentDidMount() {
+export const App: React.FunctionComponent = observer(props => {
+  const {children} = props;
+
+  const appStore = new AppStore();
+  const {appContainerRef} = appStore.navigationStore;
+  const {stateByComponentType} = new AppStore();
+
+  React.useEffect(() => {
     SplashScreen.hide();
-  }
+  }, []);
 
-  render() {
-    const {children} = this.props;
-    const {appContainerRef} = this.appStore.navigationStore;
-    const {stateByComponentType} = this.appStore;
+  return (
+    <View style={styles.wrapper}>
+      <StatusBar barStyle="dark-content" translucent={true} backgroundColor="transparent" />
 
-    return (
-      <View style={styles.wrapper}>
-        <StatusBar barStyle="dark-content" translucent={true} backgroundColor="transparent" />
+      {children ? children : <Root ref={appContainerRef} />}
 
-        {children ? children : <Root ref={appContainerRef} />}
-
-        {stateByComponentType.loading && stateByComponentType.loading.shouldRender && <Loading {...stateByComponentType.loading.props} />}
-      </View>
-    );
-  }
-}
+      {stateByComponentType.loading && stateByComponentType.loading.shouldRender && <Loading {...stateByComponentType.loading.props} />}
+    </View>
+  );
+});

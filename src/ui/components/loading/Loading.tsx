@@ -2,6 +2,7 @@ import {observer} from "mobx-react";
 import * as React from "react";
 import {Text, View} from "react-native";
 import RNModal from "react-native-modal";
+
 import {AppStore} from "../../stores/AppStore";
 import {BaseComponent} from "../BaseComponent";
 import {styles} from "./Loading.styles";
@@ -19,7 +20,7 @@ export class Loading extends BaseComponent<LoadingProps, LoadingState> {
     const {props} = this;
     const {isVisible} = this.props;
 
-    let animationOutTiming = typeof props.animationOutTiming === "number" ? props.animationOutTiming : AppStore.DEFAULT_OUT_ANIMATION_TIMING;
+    const animationOutTiming = typeof props.animationOutTiming === "number" ? props.animationOutTiming : AppStore.DEFAULT_OUT_ANIMATION_TIMING;
 
     return (
       <RNModal isVisible={isVisible} animationOutTiming={animationOutTiming}>

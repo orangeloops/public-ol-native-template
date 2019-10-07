@@ -1,6 +1,7 @@
 import {createAppContainer, createSwitchNavigator} from "react-navigation";
-import {Public} from "./Public";
+
 import {Main} from "./Main";
+import {Public} from "./Public";
 
 export const Root = createAppContainer(
   createSwitchNavigator({
