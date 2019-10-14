@@ -1,4 +1,5 @@
-import {createStackNavigator} from "react-navigation";
+import {createStackNavigator} from "react-navigation-stack";
+
 import * as Screens from "../screens/Index";
 
 export const Public = createStackNavigator({

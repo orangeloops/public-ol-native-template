@@ -1,5 +1,6 @@
 import * as React from "react";
 import {NavigationActions, NavigationContainerComponent, NavigationParams} from "react-navigation";
+
 import {Store} from "./Store";
 
 export type NavigationRoute = "Playground" | "Home";

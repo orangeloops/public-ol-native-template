@@ -1,8 +1,8 @@
 import {observer} from "mobx-react";
 import * as React from "react";
 import {Text, View} from "react-native";
-import {BaseScreen} from "../BaseScreen";
 
+import {BaseScreen} from "../BaseScreen";
 import {styles} from "./Placeholder.styles";
 
 @observer

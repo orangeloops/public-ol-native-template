@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {Locale} from "../../core/locales/Locale";
 import {DataStore} from "../../core/stores/DataStore";
 import {LocaleKey, LocaleParams} from "../locales";
@@ -11,7 +12,7 @@ export class BaseComponent<P = {}, S = {}> extends React.Component<P, S> {
   dataStore = new DataStore();
   appStore = new AppStore();
 
-  protected formatMessage<TLocaleKey extends LocaleKey>(messageId: TLocaleKey, variables: LocaleParams[TLocaleKey] | undefined = undefined, defaultMessage: string | undefined = undefined, parseLineBreaks: boolean = false): string {
+  protected formatMessage<TLocaleKey extends LocaleKey>(messageId: TLocaleKey, variables: LocaleParams[TLocaleKey] | undefined = undefined, defaultMessage: string | undefined = undefined, parseLineBreaks = false): string {
     const {currentLocale} = this.dataStore;
 
     const mobxWorkaround = (workaround: Locale) => {};

@@ -56,7 +56,10 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace
+# xcshareddata
+/ios/Pods
+/ios/Podfile.lock
+/ios/App.xcworkspace
 
 # Android/IntelliJ
 #
@@ -72,3 +75,6 @@ local.properties
 buck-out/
 \.buckd/
 *.keystore
+!debug.keystore
+
+storybook/storyLoader.js

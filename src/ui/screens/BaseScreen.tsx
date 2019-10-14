@@ -1,7 +1,8 @@
-import {NavigationParams, NavigationScreenProps} from "react-navigation";
+import {NavigationParams, NavigationScreenProp} from "react-navigation";
+
 import {BaseComponent} from "../components/BaseComponent";
 
-export type BaseScreenProps<P = NavigationParams, O = {}> = NavigationScreenProps<P, O>;
+export type BaseScreenProps<P = NavigationParams, O = {}> = NavigationScreenProp<P, O>;
 
 export type BaseScreenState = {};
 
