@@ -27,6 +27,8 @@ module.exports = {
     "@typescript-eslint/prefer-interface": "off",
 
     "simple-import-sort/sort": "warn",
+
+    "jest/no-mocks-import": "off"
   },
   settings: {
     react: {

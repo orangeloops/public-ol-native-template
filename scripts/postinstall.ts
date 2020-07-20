@@ -1,15 +1,19 @@
-import path from "path";
-
-import {projectPath, runCommand} from "./helpers";
+import {runCommand} from "./helpers";
 
 (async () => {
-  require(path.resolve(projectPath, "node_modules", "react-native-modal-translucent", "scripts", "translucent-modal"));
-
   try {
     await runCommand(["pod", ["install"]], {
-      cwd: path.resolve(projectPath, "ios"),
+      cwd: "ios",
     });
   } catch (e) {
     console.log(`- Could not run \`pod install\`!`);
   }
+
+  try {
+    await runCommand(["patch-package", []]);
+  } catch (e) {
+    console.log(`- Could not run \`patch-package\`!`);
+  }
+
+  process.exit(0);
 })();

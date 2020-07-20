@@ -3,4 +3,5 @@ module.exports = {
   bracketSpacing: false,
   jsxBracketSameLine: true,
   trailingComma: "es5",
+  endOfLine: "lf",
 };

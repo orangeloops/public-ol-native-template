@@ -4,19 +4,48 @@ import fs from "fs-extra";
 import path from "path";
 
 import {projectPath} from "./helpers";
+import {storyLoader} from "./storyLoader";
 
 (async () => {
-  const {ENVFILE} = process.env;
+  const {DEFAULT_ENVFILE} = process.env;
+  let {ENVFILE} = process.env;
 
-  if (!ENVFILE) throw new Error("ENVFILE environment variable not set.");
+  if (!ENVFILE) {
+    if (!DEFAULT_ENVFILE) throw new Error("ENVFILE environment variable not set.");
+
+    ENVFILE = DEFAULT_ENVFILE;
+  }
 
   const envFilePath = path.resolve("/tmp", "envfile");
-  const iosProjectFilePath = path.resolve(projectPath, "ios", "App.xcodeproj", "project.pbxproj");
 
-  if (fs.existsSync(envFilePath)) fs.unlinkSync(envFilePath);
-  fs.writeFileSync(envFilePath, ENVFILE);
+  const iosFolderPath = path.resolve(projectPath, "ios");
+  const iosProjectFilePath = path.resolve(iosFolderPath, "App.xcodeproj", "project.pbxproj");
 
-  const env = dotenv.parse(fs.readFileSync(ENVFILE));
+  if (process.platform === "darwin") {
+    if (fs.existsSync(envFilePath)) fs.unlinkSync(envFilePath);
+    fs.writeFileSync(envFilePath, ENVFILE);
+  }
+
+  const defaultEnv = dotenv.parse(fs.readFileSync(".env"));
+  const env = fs.existsSync(ENVFILE) ? dotenv.parse(fs.readFileSync(ENVFILE)) : {};
+  let envContent = "";
+
+  console.log("Using env file:", ENVFILE);
+  Object.keys(defaultEnv).forEach((key) => {
+    const processValue = process.env[key];
+
+    if (processValue !== undefined) {
+      env[key] = processValue;
+      console.log("process value used for ", key);
+    } else if (env[key] === undefined) {
+      env[key] = defaultEnv[key];
+      console.log("default env value used for ", key);
+    } else console.log("specific env value used for", key);
+
+    envContent += `${key}=${env[key]}\n`;
+  });
+  fs.writeFileSync(ENVFILE, envContent);
+  fs.writeFileSync(path.resolve(iosFolderPath, "tmp.xcconfig"), envContent);
 
   // region Rename iOS Product Bundle Identifier
   const iosProjectFileData = fs.readFileSync(iosProjectFilePath, "utf-8");
@@ -63,6 +92,19 @@ import {projectPath} from "./helpers";
     const newData = infoPlistData.substr(0, appNameIndex) + infoPlistData.substr(appNameIndex).replace(/<string>(.+)<\/string>/, `<string>${env.APP_NAME}</string>`);
     fs.writeFileSync(infoPlistPath, newData);
   }
+
+  const uiViewControlledStatusBarIndex = infoPlistData.indexOf("<key>UIViewControllerBasedStatusBarAppearance</key>");
+  const prevUIViewControlledStatusBar = (infoPlistData.substr(uiViewControlledStatusBarIndex).match(/<(.+)\/>/) || [""])[0].replace(/<(.+)\/>/, "$1");
+
+  if (prevUIViewControlledStatusBar === "true") {
+    shouldCleanBuild = true;
+
+    const newData = infoPlistData.substr(0, uiViewControlledStatusBarIndex) + infoPlistData.substr(uiViewControlledStatusBarIndex).replace(/<(.+)\/>/, `<false/>`);
+    fs.writeFileSync(infoPlistPath, newData);
+  }
+
+  if (uiViewControlledStatusBarIndex === -1) throw new Error("UIViewControllerBasedStatusBarAppearance not found.");
+
   // endregion
 
   // region Update android package
@@ -74,7 +116,7 @@ import {projectPath} from "./helpers";
   const javaFolder = path.resolve(projectPath, "android", "app", "src", "main", "java");
 
   const getJavaFilesFolder = (p = path.resolve(projectPath, "android", "app", "src", "main", "java")): string => {
-    const content = fs.readdirSync(p).filter(f => f !== ".DS_Store");
+    const content = fs.readdirSync(p).filter((f) => f !== ".DS_Store");
 
     if (content.length < 1) throw new Error("Java files not found.");
     else if (content.length > 1) return p;
@@ -94,7 +136,7 @@ import {projectPath} from "./helpers";
   const newMainApplicationData = mainApplicationData.replace(/package (.+);/, `package ${env.APP_ID};`);
   fs.writeFileSync(mainApplicationPath, newMainApplicationData);
 
-  const buckPath = path.resolve(projectPath, "android", "app", "BUCK");
+  const buckPath = path.resolve(projectPath, "android", "app", "_BUCK");
   const buckData = fs.readFileSync(buckPath, "utf-8");
   const newBuckData = buckData.replace(/package = "(.+)"/g, `package = "${env.APP_ID}"`);
   fs.writeFileSync(buckPath, newBuckData);
@@ -117,4 +159,9 @@ import {projectPath} from "./helpers";
 
   const iosBuildFolder = path.resolve(projectPath, "ios", "build");
   if (shouldCleanBuild && fs.existsSync(iosBuildFolder)) await del(iosBuildFolder);
-})();
+
+  await storyLoader();
+})().catch((e) => {
+  console.log(e);
+  process.exit(1);
+});
