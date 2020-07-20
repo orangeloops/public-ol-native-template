@@ -31,5 +31,5 @@
     "outDir": "build/lib",
     "declaration": true
   },
-  "exclude": [".vscode", "android", "build", "config", "ios", "node_modules", "public", "scripts", "storybook"]
+  "exclude": [".vscode", "android", "build", "config", "ios", "node_modules", "public", "storybook"]
 }

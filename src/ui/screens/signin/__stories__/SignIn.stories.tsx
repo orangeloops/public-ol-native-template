@@ -1,6 +1,8 @@
 import {storiesOf} from "@storybook/react-native";
 import * as React from "react";
-import {createAppContainer, createStackNavigator} from "react-navigation";
+import {createAppContainer} from "react-navigation";
+import {createStackNavigator} from "react-navigation-stack";
+
 import {StorybookHelper} from "../../../__stories__/StorybookHelper";
 import {SignIn} from "../SignIn";
 

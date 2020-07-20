@@ -2,9 +2,9 @@
 
 // Ensure environment variables are read.
 
-const dotenv = require("dotenv");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs-extra");
+const dotenv = require("dotenv");
 
 process.env = {
   ...process.env,
