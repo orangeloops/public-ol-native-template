@@ -2,9 +2,9 @@
 
 // Ensure environment variables are read.
 
-const dotenv = require("dotenv");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs-extra");
+const dotenv = require("dotenv");
 
 process.env = {
   ...process.env,
@@ -46,24 +46,25 @@ jest.mock("react-native-device-info", () => {
 });
 
 // React 16: https://gist.github.com/gaearon/9a4d54653ae9c50af6c54b4e0e56b583
-global.requestAnimationFrame = function(callback) {
+global.requestAnimationFrame = function (callback) {
   setTimeout(callback, 0);
 };
 
-jest.mock("react-navigation", () => {
-  return {
-    createAppContainer: jest.fn().mockReturnValue(function NavigationContainer(props) {
-      return null;
-    }),
-    createDrawerNavigator: jest.fn(),
-    createMaterialTopTabNavigator: jest.fn(),
-    createStackNavigator: jest.fn(),
-    StackActions: {
-      push: jest.fn().mockImplementation(x => ({...x, type: "Navigation/PUSH"})),
-      replace: jest.fn().mockImplementation(x => ({...x, type: "Navigation/REPLACE"})),
-    },
-    NavigationActions: {
-      navigate: jest.fn().mockImplementation(x => x),
-    },
-  };
-});
+// TODO: FIX
+// jest.mock("react-navigation", () => {
+//   return {
+//     createAppContainer: jest.fn().mockReturnValue(function NavigationContainer(props) {
+//       return null;
+//     }),
+//     createDrawerNavigator: jest.fn(),
+//     createMaterialTopTabNavigator: jest.fn(),
+//     createStackNavigator: jest.fn(),
+//     StackActions: {
+//       push: jest.fn().mockImplementation(x => ({...x, type: "Navigation/PUSH"})),
+//       replace: jest.fn().mockImplementation(x => ({...x, type: "Navigation/REPLACE"})),
+//     },
+//     NavigationActions: {
+//       navigate: jest.fn().mockImplementation(x => x),
+//     },
+//   };
+// });

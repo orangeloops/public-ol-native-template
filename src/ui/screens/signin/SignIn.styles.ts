@@ -1,54 +1,51 @@
-import {StyleSheet} from "react-native";
+import {DynamicStyleSheet} from "react-native-dark-mode";
 
-export const styles = StyleSheet.create({
+export const themedStyles = new DynamicStyleSheet({
   wrapper: {
-    alignItems: "center",
-    justifyContent: "center",
     flex: 1,
   },
-  contentContainer: {
-    height: 200,
-    maxHeight: "50%",
-    width: 300,
-    maxWidth: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  container: {
-    maxHeight: "90%",
-    maxWidth: "100%",
-    height: 180,
-    width: 260,
+  scrollViewContentContainer: {
+    flexGrow: 1,
     justifyContent: "center",
   },
   inputContainer: {
     justifyContent: "center",
   },
   input: {
-    height: 40,
-    borderColor: "black",
-    borderWidth: 1,
+    alignSelf: "center",
     marginBottom: 10,
+    width: "90%",
     paddingHorizontal: 10,
+
     color: "black",
   },
-  button: {
+  buttonContainer: {
+    alignSelf: "center",
+    marginBottom: 20,
+    width: "90%",
+  },
+  mainLogo: {
+    marginTop: 20,
+    marginBottom: 40,
+    height: 120,
+  },
+  buttonWrapper: {
+    marginTop: 20,
+  },
+  backLogo: {
+    height: 1000,
+    width: 1000,
+  },
+  backLogoContainer: {
+    alignItems: "center",
     justifyContent: "center",
-    alignSelf: "center",
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 5,
-    height: 30,
-    width: 60,
-    marginTop: 10,
+    position: "absolute",
+    right: -220,
+    bottom: -150,
+    height: 0,
+    width: 0,
   },
-  buttonRight: {
-    marginLeft: "auto",
-  },
-  buttonLeft: {
-    marginRight: "auto",
-  },
-  signInText: {
-    alignSelf: "center",
+  scrollViewContainer: {
+    alignItems: "center",
   },
 });

@@ -1,48 +1,74 @@
-import {boundMethod} from "autobind-decorator";
+import {useFocusEffect} from "@react-navigation/native";
+import {useHeaderHeight} from "@react-navigation/stack";
 import {observer} from "mobx-react";
 import * as React from "react";
-import {Text, TextInput, TouchableOpacity, View} from "react-native";
-import {AppConfig} from "../../AppConfig";
-import {BaseScreen} from "../BaseScreen";
-import {styles} from "./SignIn.styles";
+import {View} from "react-native";
+import {preload} from "react-native-bundle-splitter";
+import {useDynamicStyleSheet} from "react-native-dark-mode";
+import {useSafeArea} from "react-native-safe-area-context";
 
-@observer
-export class SignIn extends BaseScreen {
-  @boundMethod
-  protected async handleSignIn() {
-    const {appStore, dataStore} = this;
-    const {authenticationState} = dataStore;
+import {DataStore} from "../../../core/stores/DataStore";
+import MainLogo from "../../assets/companyLogo.svg";
+import {Button} from "../../components/button/Button";
+import {Input} from "../../components/input/Input";
+import {KeyboardAwareScrollView} from "../../components/keyboardawarescrollview/KeyboardAwareScrollView";
+import {useFormInput} from "../../hooks/useFormInput";
+import {NavigationHelper} from "../../navigation/NavigationHelper";
+import {UIHelper} from "../../utils/UIHelper";
+import {themedStyles} from "./SignIn.styles";
 
+export const SignIn: React.FC = observer(() => {
+  const dataStore = DataStore.getInstance();
+  const {authenticationState} = dataStore;
+  const styles = useDynamicStyleSheet(themedStyles);
+
+  const safeAreaInsets = useSafeArea();
+
+  const emailFormInput = useFormInput();
+  const passwordFormInput = useFormInput();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setTimeout(() => preload().component("Home"), 500);
+    }, [])
+  );
+
+  const handleSignIn = React.useCallback(async () => {
     if (authenticationState.loadingSignIn) return;
 
-    appStore.showComponent("loading", {});
-    const signInResponse = await dataStore.signIn({email: "email", password: "password"});
-    appStore.hideComponent("loading");
+    const signInResponse = await dataStore.signIn({
+      email: emailFormInput.inputProps.value,
+      password: passwordFormInput.inputProps.value,
+    });
 
-    if (signInResponse.success) {
-      const {navigationStore} = this.appStore;
-      navigationStore.navigateTo("Home");
-    } else alert("Sign in unsuccessful");
-  }
+    if (signInResponse.success) NavigationHelper.navigateTo({screen: "Main", params: {screen: "Home"}});
+    else alert(UIHelper.formatMessage("SignIn-unsuccessfulSignInMessage"));
+  }, [emailFormInput.inputProps.value, passwordFormInput.inputProps.value]);
 
-  render() {
-    const {position} = AppConfig.Components.SignIn.options.signInButton;
+  const headerHeight = useHeaderHeight();
 
-    return (
-      <View style={styles.wrapper}>
-        <View style={styles.contentContainer}>
-          <View style={styles.container}>
-            <View style={styles.inputContainer}>
-              <TextInput style={styles.input} placeholder="email" placeholderTextColor="lightgray" />
-              <TextInput style={styles.input} placeholder="password" secureTextEntry={true} placeholderTextColor="lightgray" />
-            </View>
-
-            <TouchableOpacity style={[styles.button, position === "right" && styles.buttonRight, position === "left" && styles.buttonLeft]} onPress={this.handleSignIn}>
-              <Text style={styles.signInText}>Sign in</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+  return (
+    <View style={styles.wrapper}>
+      <View style={styles.backLogoContainer}>
+        <MainLogo style={styles.backLogo} />
       </View>
-    );
-  }
-}
+
+      <KeyboardAwareScrollView scrollEnabled={true} contentContainerStyle={[styles.scrollViewContentContainer, {marginLeft: safeAreaInsets.left, marginRight: safeAreaInsets.right}]} keyboardShouldPersistTaps="handled">
+        <MainLogo style={[styles.mainLogo, {marginTop: safeAreaInsets.top + headerHeight}]} />
+
+        <View style={styles.inputContainer}>
+          <Input {...emailFormInput.inputProps} style={styles.input} label={UIHelper.formatMessage("SignIn-emailInputLabel")} placeholderTextColor="lightgray" />
+          <Input {...passwordFormInput.inputProps} style={styles.input} label={UIHelper.formatMessage("SignIn-passwordInputLabel")} secureTextEntry={true} placeholderTextColor="lightgray" />
+        </View>
+
+        <View style={styles.buttonWrapper}>
+          <Button containerStyle={styles.buttonContainer} isLoading={authenticationState.loadingSignIn} onPress={handleSignIn}>
+            {UIHelper.formatMessage("SignIn-submitButtonLabel")}
+          </Button>
+        </View>
+
+        <View style={{paddingBottom: safeAreaInsets.bottom}} />
+      </KeyboardAwareScrollView>
+    </View>
+  );
+});

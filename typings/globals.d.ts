@@ -1,14 +1,14 @@
 declare module "*.png";
 
 declare module "*.svg" {
-  import {StyleProp, ViewStyle} from "react-native";
+  import {StyleProp, TextStyle, ViewStyle} from "react-native";
 
   type ImageProps = {
     height?: string | number;
     width?: string | number;
     fill?: string;
 
-    style?: StyleProp<ViewStyle>;
+    style?: StyleProp<ViewStyle & TextStyle>;
   };
   declare class Image extends React.Component<ImageProps> {}
 

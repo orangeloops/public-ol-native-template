@@ -1,18 +1,11 @@
 import "./locales";
 
-import {AppConfig as BaseConfig} from "../core/AppConfig";
+import {AppConfig as CoreAppConfig, AppConfigType as CoreAppConfigType} from "../core/AppConfig";
 import {CoreHelper} from "../core/utils/CoreHelper";
 
-CoreHelper.mergeWith(BaseConfig, {
-  Components: {
-    SignIn: {
-      options: {
-        signInButton: {
-          position: "right",
-        },
-      },
-    },
-  },
-});
+export type UIAppConfig = {};
 
-export {BaseConfig as AppConfig};
+const UIAppConfig: UIAppConfig = {};
+
+export type AppConfigType = CoreAppConfigType & UIAppConfig;
+export const AppConfig: AppConfigType = CoreHelper.mergeWith(CoreAppConfig, UIAppConfig);

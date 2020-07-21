@@ -1,9 +1,10 @@
 export type LocaleParams = {
+  "Common-date": {};
   "Common-dateFormatterWithoutTimeZone": {};
   "Common-dateFormatterWithTimeZone": {};
-  "Common-date": {};
   "Common-day": {};
   "Common-days": {};
+  "Common-error": {};
   "Common-genericError": {};
   "Common-hour": {};
   "Common-hours": {};
@@ -15,6 +16,7 @@ export type LocaleParams = {
   "Common-more": {};
   "Common-networkError": {};
   "Common-ok": {};
+  "Common-retry": {};
   "Common-second": {};
   "Common-seconds": {};
   "Common-test": {};
@@ -26,6 +28,8 @@ export type LocaleParams = {
   "Common-year": {};
   "Common-years": {};
   "Common-yesterday": {};
+  "Validation-emailInvalidError": {};
+  "Validation-emptyFieldError": {};
 };
 
 export type LocaleKey = keyof LocaleParams;

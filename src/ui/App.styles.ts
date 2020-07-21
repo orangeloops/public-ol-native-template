@@ -1,6 +1,6 @@
-import {StyleSheet} from "react-native";
+import {DynamicStyleSheet} from "react-native-dark-mode";
 
-export const styles = StyleSheet.create({
+export const themedStyles = new DynamicStyleSheet({
   wrapper: {
     flex: 1,
   },

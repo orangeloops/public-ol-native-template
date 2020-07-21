@@ -1,79 +1,118 @@
-import {Omit} from "lodash";
-import {action, observable} from "mobx";
+import AsyncStorage from "@react-native-community/async-storage";
+import {Sha} from "@trackforce/react-native-crypto";
+import {action, observable, runInAction} from "mobx";
+import * as Keychain from "react-native-keychain";
+
 import {DataStore} from "../../core/stores/DataStore";
 import {AppConfig} from "../AppConfig";
-import {LoadingProps} from "../components/loading/Loading";
-import {NavigationStore} from "./NavigationStore";
-import {StorageStore} from "./StorageStore";
 
-export type ShowComponentState<TComponentProps extends {}> = {
-  props: LoadingProps;
-  shouldRender: boolean;
-};
+export enum StorageItem {
+  AccessToken = "@ol-accessToken",
+  Username = "@ol-username",
+}
 
-export type StateByComponent = {
-  loading: ShowComponentState<LoadingProps>;
+const securedStorageItems: StorageItem[] = [StorageItem.AccessToken];
+
+export type AppStoreState = {
+  initializing: boolean;
+  initialized: boolean;
 };
 
 export class AppStore {
-  static DEFAULT_OUT_ANIMATION_TIMING = 500;
-
   private static instance: AppStore;
 
-  dataStore = new DataStore();
+  dataStore = DataStore.getInstance();
 
-  navigationStore = new NavigationStore(this);
-  storageStore = new StorageStore(this);
+  @observable state: AppStoreState = {
+    initializing: false,
+    initialized: false,
+  };
 
-  @observable.shallow stateByComponentType: Partial<StateByComponent> = {};
-  hideComponentTimeouts: Partial<Record<keyof StateByComponent, any>> = {};
+  private constructor() {
+    //
+  }
 
-  constructor() {
-    if (AppStore.instance) return AppStore.instance;
+  static getInstance(): AppStore {
+    if (!this.instance) this.instance = new AppStore();
 
-    AppStore.instance = this;
-    this.dataStore.setLocale(AppConfig.Settings.Localization.defaultLocale);
+    return this.instance;
   }
 
   @action
-  showComponent<TComponent extends keyof StateByComponent>(component: TComponent, props: Omit<StateByComponent[TComponent]["props"], "isVisible">) {
-    const {stateByComponentType, hideComponentTimeouts} = this;
+  async initialize() {
+    const {dataStore, state} = this;
 
-    const timeout = hideComponentTimeouts[component];
-    clearTimeout(timeout);
+    state.initialized = false;
+    state.initializing = true;
 
-    stateByComponentType[component] = {
-      props: {
-        ...props,
-        isVisible: true,
-      },
-      shouldRender: true,
+    await dataStore.initialize();
+    await this.dataStore.setLocale(AppConfig.Settings.Localization.defaultLocale);
+
+    runInAction(() => {
+      state.initializing = false;
+      state.initialized = true;
+    });
+  }
+
+  async reset() {
+    const {dataStore} = this;
+
+    await this.cleanStorage();
+
+    dataStore.reset();
+
+    this.state = {
+      initialized: false,
+      initializing: false,
     };
   }
 
-  @action
-  hideComponent<TComponent extends keyof StateByComponent>(component: TComponent) {
-    const {stateByComponentType, hideComponentTimeouts} = this;
+  async getUsernameHash(): Promise<string | null> {
+    const {user} = this.dataStore.authenticationState;
+    const username = user?.email ?? (await this.getItem(StorageItem.Username));
 
-    const prevState = stateByComponentType[component];
-    const timeout = hideComponentTimeouts[component];
+    return username ? Sha.sha256(username) : null;
+  }
 
-    if (!prevState) return;
-    clearTimeout(timeout);
+  async getItem<TItem extends StorageItem>(item: TItem): Promise<string | null> {
+    if (securedStorageItems.includes(item)) {
+      const result = await Keychain.getGenericPassword({service: item}).catch(() => null);
+      const usernameHash = await this.getUsernameHash();
 
-    stateByComponentType[component] = {
-      ...prevState,
-      props: {
-        ...prevState.props,
-        isVisible: false,
-      },
-    };
+      if (result) {
+        if (!usernameHash || result.username !== usernameHash) {
+          await this.deleteItem(item);
 
-    hideComponentTimeouts[component] = setTimeout(() => {
-      this.stateByComponentType[component] = {
-        ...prevState,
-        shouldRender: false,
-      };
-    }, prevState.props.animationOutTiming || AppStore.DEFAULT_OUT_ANIMATION_TIMING);
+          return null;
+        } else return result.password;
+      }
+
+      return null;
+    }
+
+    return AsyncStorage.getItem(item);
+  }
+
+  async setItem<TItem extends StorageItem>(item: TItem, value: string) {
+    if (securedStorageItems.includes(item)) {
+      const usernameHash = await this.getUsernameHash();
+
+      if (usernameHash) await Keychain.setGenericPassword(usernameHash, value, {service: item}).catch(() => null);
+    } else await AsyncStorage.setItem(item, value);
+  }
+
+  async deleteItem<TItem extends StorageItem>(item: TItem) {
+    if (securedStorageItems.includes(item))
+      await Keychain.resetGenericPassword({
+        service: item,
+      }).catch(() => null);
+    else await AsyncStorage.removeItem(item);
+  }
+
+  async cleanStorage() {
+    const storageKeysToDelete = (await AsyncStorage.getAllKeys()).filter((k) => k.startsWith("@ol"));
+    await AsyncStorage.multiRemove(storageKeysToDelete);
+
+    await Promise.all(securedStorageItems.map((k) => Keychain.resetGenericPassword({service: k}).catch(() => null)));
   }
 }

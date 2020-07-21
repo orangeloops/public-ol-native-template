@@ -1,12 +1,13 @@
 import {Locale} from "./Locale";
 
 export const en_US: Locale = {
-  code: "en_US",
+  code: "en-US",
+  "Common-date": "date",
   "Common-dateFormatterWithoutTimeZone": "MMMM Do, YYYY [at] h:mmA",
   "Common-dateFormatterWithTimeZone": "MMMM Do, YYYY [at] h:mmA z",
-  "Common-date": "date",
   "Common-day": "day",
   "Common-days": "days",
+  "Common-error": "Error",
   "Common-genericError": "Sorry, something went wrong.",
   "Common-hour": "hr",
   "Common-hours": "hrs",
@@ -18,6 +19,7 @@ export const en_US: Locale = {
   "Common-more": "more",
   "Common-networkError": "Could not connect to server.",
   "Common-ok": "Ok",
+  "Common-retry": "Retry",
   "Common-second": "sec",
   "Common-seconds": "secs",
   "Common-test": "Test",
@@ -29,4 +31,6 @@ export const en_US: Locale = {
   "Common-year": "year",
   "Common-years": "years",
   "Common-yesterday": "Yesterday",
+  "Validation-emailInvalidError": "Invalid email",
+  "Validation-emptyFieldError": "This field cannot be empty",
 };

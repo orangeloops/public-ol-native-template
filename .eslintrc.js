@@ -8,6 +8,7 @@ module.exports = {
       jsx: true,
     },
   },
+  plugins: ["simple-import-sort"],
   rules: {
     "prettier/prettier": "warn",
 
@@ -24,6 +25,10 @@ module.exports = {
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/prefer-interface": "off",
+
+    "simple-import-sort/sort": "warn",
+
+    "jest/no-mocks-import": "off"
   },
   settings: {
     react: {
