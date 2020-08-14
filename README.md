@@ -1,7 +1,9 @@
 # React-Native Project Boilerplate
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](https://github.com/orangeloops/public-ol-native-template/pulls) [![GitHub](https://img.shields.io/github/license/orangeloops/public-ol-native-template.svg)](https://github.com/orangeloops/public-ol-native-template/blob/develop/LICENSE)
 
-This [mobile app template](https://orangeloops.com/2019/08/open-source-templates-for-building-react-and-reactnative-apps/) is an empty project prepared with primary software libraries and configurations needed to begin developing a React Native mobile application.
+![](https://i.ibb.co/3p70692/template-Mockup1.jpg)
+
+This [mobile app template](https://orangeloops.com/2020/07/open-source-react-native-app-template/) is an empty project prepared with primary software libraries and configurations needed to begin developing a React Native mobile application.
 
 It also has basic sample components, tests, and demonstrations of working with tools such as MobX or Storybook.
 
